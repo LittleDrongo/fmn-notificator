@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/LittleDrongo/fmn-lib/console/color"
 )
 
 func (t TelegramNotificator) Create(token, chatID string) TelegramNotificator {
@@ -26,7 +24,6 @@ func (n TelegramNotificator) SendAlert(a ...any) error {
 		return err
 	}
 	return nil
-
 }
 
 func (n *TelegramNotificator) SetToken(token string) {
@@ -47,8 +44,6 @@ func (n TelegramNotificator) sendMessage(msg string) error {
 		Text:   msg,
 		ChatID: n.chatID,
 	}
-
-	fmt.Println(color.RED, msg2, color.RESET)
 
 	msgJSON, err := json.Marshal(msg2)
 	if err != nil {

@@ -14,16 +14,16 @@ func main() {
 
 func NotificatorsSampleUse() {
 	telegramNotificator := telegramNotificator.TelegramNotificator{}
-	telegramNotificator.SetChatID(config.TelegramConfig.ChatID)
-	telegramNotificator.SetToken(config.TelegramConfig.Token)
+	telegramNotificator.SetChatID(config.Telegram.ChatID)
+	telegramNotificator.SetToken(config.Telegram.Token)
 
 	discordNotificator := discordNotificator.DiscordNotificator{}
 	discordNotificator.SetChatID(config.Discord.ChatID)
 	discordNotificator.SetToken(config.Discord.Token)
 
-	tg := telegramNotificator.Create(config.TelegramConfig.Token, config.TelegramConfig.ChatID)
+	tg := telegramNotificator.Create(config.Telegram.Token, config.Telegram.ChatID)
 
 	notGroup := notificator.Create()
 	notGroup.Append(telegramNotificator, discordNotificator, tg)
-	notGroup.SendAlerts("test group notifications func")
+	notGroup.SendAlerts("hello text")
 }

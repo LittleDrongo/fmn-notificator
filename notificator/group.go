@@ -29,7 +29,7 @@ func (ng *NotificatorsGroup) SendAlerts(a ...any) {
 		go func(n Notificator) {
 			defer wg.Done()
 			err := n.SendAlert(a...)
-			exception.Println(err, "ошибка нотификатора:")
+			exception.Println(err, "ошибка: SendAlerts групповой отправки нотификатора:")
 		}(n)
 	}
 
