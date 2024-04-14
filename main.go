@@ -1,9 +1,13 @@
 package main
 
 import (
+	"sync"
+
+	"github.com/LittleDrongo/fmn-lib/exception"
 	"github.com/LittleDrongo/fmn-notificator/notificator"
-	emailnotificator "github.com/LittleDrongo/fmn-notificator/notificator/emailNotificator"
+	"github.com/LittleDrongo/fmn-notificator/notificator/discordNotificator"
 	"github.com/LittleDrongo/fmn-notificator/notificator/telegramNotificator"
+	"github.com/LittleDrongo/fmn-notificator/settings/config"
 )
 
 func main() {
@@ -12,24 +16,56 @@ func main() {
 }
 
 func NotificatorsSampleUse() {
-
 	telegramNotificator := telegramNotificator.TelegramNotificator{}
-	emailNotificators := emailnotificator.EmailNotificator{}
+	telegramNotificator.SetChatID(config.TelegramConfig.ChatID)
+	telegramNotificator.SetToken(config.TelegramConfig.Token)
 
-	// fmt.Println(teleNotif, emailNotif)
+	discordNotificator := discordNotificator.DiscordNotificator{}
+	discordNotificator.SetChatID(config.Discord.ChatID)
+	discordNotificator.SetToken(config.Discord.Token)
 
-	_ = telegramNotificator.SendAlert()
-	_ = emailNotificators.SendAlert()
-
-	arrayNotif := []notificator.Notificator{
+	notificators := []notificator.Notificator{
 		telegramNotificator,
-		emailNotificators,
+		discordNotificator,
 	}
 
-	for _, n := range arrayNotif {
+	var wg sync.WaitGroup
+	wg.Add(len(notificators))
 
-		n.SendAlert()
-
+	for _, n := range notificators {
+		// Запускаем каждый вызов SendAlert в отдельной горутине
+		go func(n notificator.Notificator) {
+			defer wg.Done() // Уменьшаем счетчик горутин при завершении
+			err := n.SendAlert("Проверка асинхронного выполнения кода 2")
+			exception.Println(err, "Ошибка нотификатора:")
+		}(n)
 	}
 
+	// Ожидаем завершения всех горутин
+	wg.Wait()
 }
+
+// func NotificatorsSampleUse() {
+
+// 	telegramNotificator := telegramNotificator.TelegramNotificator{}
+// 	telegramNotificator.SetChatID(config.TelegramConfig.ChatID)
+// 	telegramNotificator.SetToken(config.TelegramConfig.Token)
+
+// 	discordNotificator := discordNotificator.DiscordNotificator{}
+// 	discordNotificator.SetChatID(config.Discord.ChatID)
+// 	discordNotificator.SetToken(config.Discord.Token)
+
+// 	notificators := []notificator.Notificator{
+// 		telegramNotificator,
+// 		discordNotificator,
+// 	}
+
+// 	for _, n := range notificators {
+// 		// Запускаем каждый вызов SendAlert в отдельной горутине
+// 		go func(n notificator.Notificator) {
+// 			err := n.SendAlert("Проверка асинхронного выполнения кода")
+// 			exception.Println(err, "Ошибка нотификатора:")
+// 		}(n)
+// 	}
+
+// }

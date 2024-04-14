@@ -1,7 +1,7 @@
 package notificator
 
 type Notificator interface {
-	SendAlert() error
+	SendAlert(a ...any) error
 }
 
 func SendAlertNotification(n Notificator) error {
