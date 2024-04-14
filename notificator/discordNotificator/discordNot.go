@@ -6,6 +6,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+func (d DiscordNotificator) Create(token, chatID string) DiscordNotificator {
+	return DiscordNotificator{token: token, chatID: chatID}
+}
+
 type DiscordNotificator struct {
 	token   string
 	chatID  string
@@ -51,46 +55,3 @@ func (n *DiscordNotificator) sendMessage(msg string) error {
 
 	return nil
 }
-
-// func (n *DiscordNotificator) sendMessage(msg string) error {
-
-// 	// Токен вашего бота Discord
-// 	token := n.token
-
-// 	// Создаем новую сессию Discord бота
-// 	dg, err := discordgo.New("Bot " + token)
-// 	if err != nil {
-// 		// fmt.Println("Error creating Discord session: ", err)
-// 		return err
-// 	}
-
-// 	// Обработчик события готовности
-// 	dg.AddHandler(func(s *discordgo.Session, event *discordgo.Ready) {
-// 		onReady(s, event, n, msg)
-// 	})
-
-// 	// Открываем соединение с Discord
-// 	err = dg.Open()
-// 	if err != nil {
-// 		// fmt.Println("Error opening Discord connection: ", err)
-// 		return err
-// 	}
-
-// 	dg.Close()
-// 	return nil
-// }
-
-// func onReady(s *discordgo.Session, event *discordgo.Ready, n *DiscordNotificator, message string) {
-// 	// ID канала, в который вы хотите отправить сообщение
-// 	channelID := n.chatID
-
-// 	// Текст сообщения
-// 	// message := "Hello, Discord!"
-
-// 	// Отправляем сообщение в указанный канал
-// 	_, err := s.ChannelMessageSend(channelID, message)
-// 	if err != nil {
-// 		fmt.Println("Error sending message: ", err)
-// 		return
-// 	}
-// }

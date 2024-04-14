@@ -9,6 +9,10 @@ import (
 	"github.com/LittleDrongo/fmn-lib/console/color"
 )
 
+func (t TelegramNotificator) Create(token, chatID string) TelegramNotificator {
+	return TelegramNotificator{token: token, chatID: chatID}
+}
+
 type TelegramNotificator struct {
 	token  string
 	chatID string
