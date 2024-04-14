@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/LittleDrongo/fmn-notificator/notificator"
 	"github.com/LittleDrongo/fmn-notificator/notificator/discordNotificator"
 	emailnotificator "github.com/LittleDrongo/fmn-notificator/notificator/emailNotificator"
@@ -9,6 +11,7 @@ import (
 )
 
 func main() {
+
 	NotificatorsSampleUse()
 
 }
@@ -22,11 +25,18 @@ func NotificatorsSampleUse() {
 	discordNotificator.SetChatID(config.Discord.ChatID)
 	discordNotificator.SetToken(config.Discord.Token)
 
-	emailnotificator := emailnotificator.EmailNotificator{}
+	emailNot := emailnotificator.EmailNotificator{}
+	emailNot.SetSettings(config.Email.From, config.Email.To, config.Email.Cc, config.Email.Subj)
+	emailNot.SetDialer(config.Email.Dialer.Host, config.Email.Dialer.Port, config.Email.Dialer.Username, config.Email.Dialer.Password)
 
 	tg := telegramNotificator.Create(config.Telegram.Token, config.Telegram.ChatID)
 
 	notGroup := notificator.Create()
-	notGroup.Append(telegramNotificator, discordNotificator, tg, emailnotificator)
-	notGroup.SendAlerts("hello text")
+	notGroup.Append(telegramNotificator, discordNotificator, tg, emailNot)
+
+	_, err := os.Open("data/file.txt")
+	if err != nil {
+		notGroup.SendAlerts("Внимание! Приложение упало! ошибка:", err)
+	}
+
 }
